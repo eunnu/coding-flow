@@ -28,8 +28,7 @@ int low_x(int n, int k)
 					res = res - 1;
 					tmp = 0;
 					continue;
-				} 
-				//cout << "1 " << tmp << " " << res << endl; 							
+				} 							
 			}
 			else if(check && !word[i][j])
 			{
@@ -63,8 +62,7 @@ int low_y(int n, int k)
 					res = res - 1;
 					tmp = 0;
 					continue;
-				}
-				//cout << "2 " << tmp << " " << res << endl; 					
+				}				
 			}
 			else if(check && !word[j][i])
 			{
