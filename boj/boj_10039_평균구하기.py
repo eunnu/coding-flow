@@ -1,15 +1,9 @@
-# sum = 0
-# for i in range(5):
+sum = 0
+for i in range(5):
     
-#     a = int(input())
-#     if a < 40:
-#          a = 40
-#     sum += a
+    a = int(input())
+    if a < 40:
+         a = 40
+    sum += a
 
-# print(int(sum/5))
-
-
-num = int(input())
-while(num):
-    print(num%10)
-    num=num//10
+print(int(sum/5))
