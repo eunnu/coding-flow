@@ -8,14 +8,13 @@ for tc in range(1, T+1):
 
     while True:
         if li == []: break
-        cnt, buy = 0
+        cnt, buy = 0, 0
         max_money = max(li)
         idx = 0
         for i in range(len(li)):
             if li[i] == max_money:
                 money = (max_money * cnt - buy) + money
                 idx = i
-                print(max_money, cnt, buy,money, i)
                 cnt = 0
                 buy = 0
             else:
