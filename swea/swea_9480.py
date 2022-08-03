@@ -1,3 +1,4 @@
+import itertools
 T = int(input())
 
 for tc in range(1, T + 1):
@@ -10,13 +11,25 @@ for tc in range(1, T + 1):
     for _ in range(N):
         sam = input()
         sam_li.append(sam)
-    
+            
     for i in range(N):
         for j in range(len(sam_li[i])):
             if sam_li[i][j] in alpha:
                 alpha[sam_li[i][j]] += 1
+                
     
-    sorted_dict = sorted(alpha.items(), key = lambda item: item[1])
-    print(f'#{tc} {sorted_dict[0][1]}')
+    print(alpha)
+    '''
+    alpha_li = []
+    for i in alpha.keys():
+        if (alpha.get(i) - 1):
+            alpha_li.append(i)
+
+    ans = 0
+    result = list(itertools.combinations((alpha_li),2))
+
+    print(result)
+    #print(f'#{tc} ')
+    '''
             
 
