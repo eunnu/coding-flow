@@ -1,16 +1,9 @@
-a = [[3,1,2],
-	 [4,7,9],
-     [6,8,5]]
+T = int(input())
+for test_case in range(1, T + 1):
+    P, Q, R, S, W = map(int, input().split())
 
-print('original mat : ',a)
 
-# 직접구현 전치코드 -> 좋으나 3*4 모양이면 귀찮음
-# for r in range(3):
-# 	for c in range(3):
-# 		if r > c:
-# 			a[r][c], a[c][r] = a[c][r], a[r][c]
-
-#tr_mat = list(zip(*a))
-tr_mat = list(map(list, zip(*a)))      
-
-print('after swap mat : ',tr_mat)
+    if (W <= R):
+        print('#%d'%test_case, min(Q, P*W))
+    else:
+        print('#%d'%test_case, min(P*W, (Q + (((W-R)*S)))))
