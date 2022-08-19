@@ -1,18 +1,18 @@
-s = 'one2three4'
-num_e = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
-num = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-ans = ''
+def perm(idx):
+    if idx == N:
+        print(a)
+        return
+    else:
+        for i in range(N):
+            if visited[i] == 0:
+                visited[i] = 1
+                a[idx] = arr[i]
+                perm(idx+1)
+                visited[i] = 0
 
-for i in range(len(s)):
-    if s[i] in num:
-        ans += s[i]
-        continue
-    for j in range(6):
-        n = ''
-        n += s[i:i+j]
-        if n in num_e:
-            for k in range(10):
-                if n == num_e[k]:
-                    ans += str(k)
-            break
-print(int(ans))
+
+N = 3
+arr = [i for i in range(N)]
+visited = [0]*N
+a = [0]*N
+perm(0)
