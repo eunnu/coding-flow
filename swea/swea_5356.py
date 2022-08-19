@@ -17,4 +17,4 @@ for tc in range(1, T+1):
             else:
                 st += us[j][i]
 
-    print(st)
+    print(f"#{tc} {st}")
