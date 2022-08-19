@@ -1,17 +1,19 @@
 '''
 0~N 까지 인덱스 순열을 뽑아서 최소 합을 구한다.
 '''
-def perm(idx):
+def perm(idx, acc):
     global ans
+    if acc > ans:
+        return
     if idx == N:
-        if ans > sum(ex):
-            ans = sum(ex)
+        if ans > acc:
+            ans = acc
+        return
     else:
         for i_idx in range(N):
             if visited[i_idx] == 0:
                 visited[i_idx] = 1
-                ex[idx] = arr[idx][number[i_idx]]
-                perm(idx+1)
+                perm(idx+1, acc + arr[idx][i_idx])
                 visited[i_idx] = 0
 
 T = int(input())
@@ -22,11 +24,8 @@ for tc in range(1, T+1):
     arr = []
     for i in range(N):
         arr.append(list(map(int, input().split())))
-
-    number = [i for i in range(N)]
     visited = [0]*N
-    ex = [0]*N
     ans = 987654321
-    perm(0)
+    perm(0, 0)
 
     print(f"#{tc} {ans}")
