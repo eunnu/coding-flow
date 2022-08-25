@@ -1,20 +1,27 @@
-def n_queen(y, x, visit):
+def queen(depth):
     global res
-    if queen == N - 1:
+    if depth == N:
         res += 1
         return
-
     else:
+        temp = []
+        if visit:
+            for i in range(depth):
+                temp.append(visit[i])
+                temp.append(visit[i] - depth + i)
+                temp.append(visit[i] + depth - i)
 
+        for i in range(N):
+            if i not in temp:
+                visit.append(i)
+                queen(depth+1)
+                visit.pop()
 
 
 T = int(input())
-
 for tc in range(1, T+1):
     N = int(input())
-    board = [[0]*N for _ in range(N)]
-
-    queen = 1
+    visit = []
     res = 0
-    n_queen(0, 0, board)
+    queen(0)
     print(f"#{tc} {res}")
