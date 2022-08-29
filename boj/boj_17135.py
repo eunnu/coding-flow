@@ -1,18 +1,19 @@
-def game(s1, s2, s3):
-
-
 N, M, D = map(int, input().split())
+
 area = []
-num = []
-for _ in range(N):
+for i in range(N):
     area.append(list(map(int, input().split())))
 
+sh = []
 for i in range(M):
-    tmp = 0
+    cnt = 0
     for j in range(N):
-        tmp += area[j][i]
-    num.append([tmp, i])
-num.sort(reverse=True)
+        cnt += area[j][i]
+    sh.append([cnt, i])
 
-for i in range(M-2):
-    game(num[i][1], num[i+1][1], num[i+2][1])
+sh.sort()
+dy = [-1, 0, 0]
+dx = [0, -1, 1]
+
+
+
