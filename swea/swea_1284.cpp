@@ -1,5 +1,7 @@
 #include <iostream>
 #include <algorithm>
+#include <string.h>
+#include <vector>
 
 using namespace std;
 int arr[1000001];
@@ -21,7 +23,7 @@ int main()
 		for(int i = 0; i < N; i++) cin >> arr[i];
 
 		int brr[1000001];
-		memcpy(brr, arr, sizeof(int) * N);
+		memcpy(brr, arr, sizeof(arr));
 		sort(brr, brr+N, greater<int>());
 
 		int idx = 0; //최댓값의 인덱스를 저장 해 줄 값
