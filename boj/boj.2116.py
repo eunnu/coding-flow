@@ -23,4 +23,4 @@ for i in range(N-1):
     for j in range(i, N):
         comb.append([i, j])
 
-for i in range()
+for i in range()zzzzzzzzz
