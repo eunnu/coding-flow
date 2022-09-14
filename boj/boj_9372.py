@@ -1,37 +1,15 @@
 '''
-가장 왼쪽은 2**n 이므로 100 이하의 리스트를 만들어 해당 번호의 정점부터 시작한다.
-1을 만나면 오른쪽을 도는 방법으로 재귀를 돈다.
+이 문제는 왜 여기 있는지 모르겠는데...
+의도는 최소신장트리인거 같은데 그러려면 이렇게 내면 안되는거 아닌가...
+이렇게 되면 당연히 나라 - 1 이 아닌가..
+이렇게 푸는거 아닌가..?
 '''
 
 
-def right(depth, res):
+T = int(input())
+for _ in range(T):
+    N, M = map(int, input().split())
+    for _ in range(M):
+        P, Q = map(int, input().split())
 
-
-
-def left(idx, res):
-    if idx == '1':
-        right(tree[0][3], res)
-    for i in range(N):
-        if len(tree[N]) == 2:
-            res += tree[N][1]
-            return
-        for j in range(len(tree[i])):
-            if
-
-
-
-for tc in range(1, 11):
-    N = int(input())
-    tree = [list(map(input().split())) for _ in range(N)]
-
-    number = [64, 32, 16, 8, 4, 2]
-
-    visited = []
-    ans = ''
-    for num in number:
-        if int(num) in tree:
-            visited.append(num)
-            left(num, ans)
-
-
-
+    print(N - 1)
