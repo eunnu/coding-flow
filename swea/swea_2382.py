@@ -1,57 +1,35 @@
-# 군집을 돌면서 이동한 인덱스를 전부 리스트에 넣어준다.
-# 해당 리스트를 비워가면서 같은 인덱스 상에 존재하는 군집들을 다른 리스트에 넣어준다.
-# 해당 리스트를 군집의 크기로 정렬을 한 후에 가장 큰 군집을 기준으로 모아준다.
-def sol():
-    for idx in range(len(group)):
-        [y, x, cnt, d] = group[idx]         # 인덱스, 크기, 방향
+# 군집들의 리스트를 실시간으로 수와 방향을 업데이트 해준다
+# 이동을 할 때의 해당 군집의 번호를 위치에 넣어준다
+def check():
+    for idx in range(N):
+        for jdx in range(N):
+            if (idx, jdx) in area:
+                if len(area[(idx, jdx)]) > 1:
+                    area[(idx, jdx)].sort()
+                    tmp = area[(idx, jdx)]
+                    for k in range(len(tmp)-1):
+                        group[tmp[-1][1]][2] += group[tmp[k][1]][2]
+                        group[tmp[k][1]] = [0, 0, 0, 0]
 
-        if cnt == 0:                           # 합쳐졌거나 사라진 군집은 넘어간다.
-            continue
 
-        ny = y + dy[d]
-        nx = x + dx[d]
+def sol(number):
 
-        if 0 < nx < N - 1 and 0 < ny < N - 1:
-            move.append([ny, nx, cnt, d])
-        elif nx == 0 or nx == N-1 or ny == 0 or ny == N-1:
-            if cnt//2 > 0:
-                if d == 1:
-                    move.append([ny, nx, cnt//2, 2])
-                elif d == 2:
-                    move.append([ny, nx, cnt//2, 1])
-                elif d == 3:
-                    move.append([ny, nx, cnt//2, 4])
-                elif d == 4:
-                    move.append([ny, nx, cnt//2, 3])
-
-    group.clear()
-
-    arr = [[0] * N for _ in range(N)]
-
-    for jdx in range(len(move)):
-        tmp = move[jdx]
-
-        if arr[tmp[0]][tmp[1]]:
-            if tmp not in comb:
-                comb.append(tmp)
-            if arr[tmp[0]][tmp[1]] not in comb:
-                comb.append(arr[tmp[0]][tmp[1]])
+    y, x, cnt, di = group[number]
+    ny = y + dy[di]
+    nx = x + dx[di]
+    if 0 <= nx < N and 0 <= ny < N:
+        if nx == 0 or ny == 0 or nx == N-1 or ny == N-1:
+            cnt //= 2
+            if di % 2:
+                di += 1
+            else:
+                di -= 1
+    if cnt:
+        if (ny, nx) in area:
+            area[(ny, nx)] += [[cnt, number]]
         else:
-            arr[tmp[0]][tmp[1]] = tmp
-
-    if comb:
-        sorted(comb, key=lambda same: same[2])
-        tmp = comb.pop()
-        move.remove(tmp)
-        group.append(tmp)
-        while comb:
-            aa = comb.pop()
-            move.remove(aa)
-            group[-1][2] += aa[2]
-
-    while move:
-        tmp = move.pop()
-        group.append(tmp)
+            area[(ny, nx)] = [[cnt, number]]
+    group[number] = [ny, nx, cnt, di]
 
 
 T = int(input())
@@ -61,14 +39,15 @@ for tc in range(1, T+1):
 
     dy = [0, -1, 1, 0, 0]
     dx = [0, 0, 0, -1, 1]
-    while M != 0:
-        move = []
-        comb = []
-        sol()
+
+    while M:
+        area = dict()
+        for i in range(K):
+            sol(i)
+        check()
         M -= 1
 
     ans = 0
-    for i in range(len(group)):
+    for i in range(K):
         ans += group[i][2]
-
     print(f"#{tc} {ans}")
