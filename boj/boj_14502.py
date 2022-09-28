@@ -1,77 +1,86 @@
-def bfs():
-    global safe, ans
-    mz = safe - 3
-    lab_cpy2 = []
-    for i_idx in range(N):
-        temp = []
-        for j_jdx in range(M):
-            temp.append(lab_cpy[i_idx][j_jdx])
-        lab_cpy2.append(temp)
+# 완전한 시뮬
+# 1. 벽을 세개 세우고
+# 2. 바이러스를 퍼뜨려서 안전한 곳을 센다.
+# 매번 배열을 복사 할 수 없으므로 가상 좌표를 사용
+from collections import deque
 
-    queue = []
-    for i_idx in range(len(origin)):
-        temp = origin[i_idx]
-        queue.append(temp)
+
+def bfs():
+    global ans
+    safe_zone = len(safe)
+    dy = [-1, 1, 0, 0]
+    dx = [0, 0, -1, 1]
+    visited = set()
+
+    flag = False
+    for vi in v:
+        queue.append(vi)
 
     while queue:
-        y, x = queue.pop(0)
+        (y, x) = queue.popleft()
 
-        for dire in range(4):
-            ny = y + dy[dire]
-            nx = x + dy[dire]
+        visited.add((y, x))
 
-            if 0 <= ny < N and 0 <= nx < N and not lab_cpy2[ny][nx]:
-                lab_cpy2[ny][nx] = 2
-                mz -= 1
-                queue.append((ny, nx))
+        if ans and safe_zone < ans:
+            flag = True
+            break
 
-    ans = max(mz, ans)
+        for direc in range(4):
+            ny = y + dy[direc]
+            nx = x + dx[direc]
+
+            if 0 <= ny < r and 0 <= nx < c:
+                if (ny, nx) not in visited:
+                    if (ny, nx) in safe:
+                        queue.append((ny, nx))
+                        safe_zone -= 1
+
+    if not flag and ans < safe_zone:
+        ans = safe_zone
 
 
-def wall(cnt):
+def add_wall(cnt):
     if cnt == 3:
         bfs()
         return
 
-    for idx in range(N):
-        for jdx in range(M):
-            if not lab_cpy[i][j]:
-                lab_cpy[i][j] = 1
-                wall(cnt+1)
-                lab_cpy[i][j] = 0
+    else:
+        for idx in range(r):
+            for jdx in range(c):
+                if (idx, jdx) in safe:
+                    safe.discard((idx, jdx))
+                    wall.add((idx, jdx))
+                    add_wall(cnt + 1)
+                    wall.discard((idx, jdx))
+                    safe.add((idx, jdx))
 
 
+r, c = map(int, input().split())
+lab = [list(map(int, input().split())) for _ in range(r)]
 
-N, M = map(int, input().split())
+queue = deque()
+v = deque()
+safe = set()
+wall = set()
 
-lab = [list(map(int, input().split())) for _ in range(N)]
-
-origin = []
-
-dx = [0, 0, -1, 1]
-dy = [1, -1, 0, 0]
-
-safe = 0
-for i in range(N):
-    for j in range(M):
-        if not lab:
-            safe += 1
+for i in range(r):
+    for j in range(c):
+        if lab[i][j] == 1:
+            wall.add((i, j))
         elif lab[i][j] == 2:
-            origin.append((i, j))
+            v.append((i, j))
+        else:
+            safe.add((i, j))
 
 ans = 0
-for i in range(N):
-    for j in range(M):
-        lab_cpy = []
-        if not lab[i][j]:
-            for k in range(N):
-                tmp = []
-                for z in range(M):
-                    tmp.append(lab[k][z])
-                lab_cpy.append(tmp)
-
-            lab_cpy[i][j] = 1
-            wall(1)
-            lab_cpy[i][j] = 0
+# 이제 벽을 세우러 가볼까
+for i in range(r):
+    for j in range(c):
+        if (i, j) in safe:
+            safe.discard((i, j))
+            wall.add((i, j))
+            add_wall(1)
+            wall.discard((i, j))
+            safe.add((i, j))
 
 print(ans)

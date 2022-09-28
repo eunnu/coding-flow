@@ -1,44 +1,40 @@
+# BFS 로 푸는데 백트래킹이 관건이다.
+# 오늘은 과연 풀 것인가
+from collections import deque
+
 T = int(input())
-for tc in range(1, T + 1):
-    N, M = map(int, input().split())
-    ans = M - N
-    stack = [[[N, 0]]]
-    visited = dict()
-    while stack != [[]]:
-        arr = stack.pop()
-        tmp = []
-        flag = False
-        while arr:
-            [a, cnt] = arr.pop()
-            if a == M:
-                if ans > cnt:
-                    ans = cnt
-                break
-            if a > M:
-                if ans > a - M + cnt - 1:
-                    ans = a - M + cnt - 1
-                continue
+for tc in range(1, T+1):
+    start, end = map(int, input().split())
 
-            if ans < cnt:
-                break
+    queue = deque()
+    queue.append((start, 0))
+    visited = set()
+    ans = end - start + 1
 
-            if a < M:
-                if ans > M - a + cnt:
-                    ans = M - a + cnt
-                    continue
+    while queue:
+        (num, cnt) = queue.popleft()
 
-            if a - 1 > 0 and ((a, a - 1) not in visited.keys() or visited[(a, a - 1)] > cnt):
-                tmp.append([a - 1, cnt + 1])
-                visited[(a, a - 1)] = cnt
-            if (a, a + 1) not in visited.keys() or visited[(a, a + 1)] > cnt:
-                tmp.append([a + 1, cnt + 1])
-                visited[(a, a + 1)] = cnt
-            if a - 10 > 0 and ((a, a - 10) not in visited.keys() or visited[(a, a - 10)] > cnt):
-                tmp.append([a - 10, cnt + 1])
-                visited[(a, a - 10)] = cnt
+        if num in visited:
+            continue
 
-            tmp.append([a * 2, cnt + 1])
+        visited.add(num)
 
-        stack.append(tmp)
+        if num == end:
+            if ans > cnt:
+                ans = cnt
+            break
+
+        if 0 < num*2 < 1000000 and num*2 not in visited:
+            queue.append((num*2, cnt + 1))
+
+        if num+1 not in visited:
+            queue.append((num+1, cnt + 1))
+
+        if 0 < num-1 and num-1 not in visited:
+            queue.append((num-1, cnt + 1))
+
+        if 0 < num - 10 and num - 10 not in visited:
+            queue.append((num-10, cnt + 1))
 
     print(f"#{tc} {ans}")
+
