@@ -1,31 +1,39 @@
 from collections import deque
-
 for tc in range(1, int(input()) + 1):
     N = int(input())
-    li = [list(map(int, input().split())) for _ in range(N)]
+    arr = [list(map(int, input().split())) for _ in range(N)]
 
-    load = [[987654321] * N for _ in range(N)]
     queue = deque()
-    queue.append([0, 0])
-    visited = set()
+    queue.append((0, 0))
+
+    ans = 987654321
 
     dy = [-1, 1, 0, 0]
     dx = [0, 0, -1, 1]
 
-    while queue:
-        [y, x] = queue.popleft()
+    dist = [[987654321] * N for _ in range(N)]
+    dist[0][0] = 0
 
-        visited.add((y, x))
+    while queue:
+        y, x = queue.popleft()
+
+        if y == N-1 and x == N-1:
+            continue
+
+        if ans < dist[y][x]:
+            break
 
         for i in range(4):
             ny = y + dy[i]
             nx = x + dx[i]
 
-            if 0 <= ny < N and 0 <= nx < N:
-                if (ny, nx) not in visited:
-                    load[ny][nx] = min(load[ny][nx], li[y][x] + abs(li[ny][nx] - li[y][x]) + 1)
-                    if [ny, nx] not in queue:
-                        queue.append([ny, nx])
+            if 0 <= nx < N and 0 <= ny < N:
+                if arr[ny][nx] < arr[y][x]:
+                    cost = dist[y][x] + 1
+                else:
+                    cost = dist[y][x] + abs(arr[ny][nx] - arr[y][x]) + 1
+                if dist[ny][nx] > cost:
+                    queue.append((ny, nx))
+                    dist[ny][nx] = cost
 
-    print(load)
-    print(f"#{tc} {load[N-1][N-1]}")
+    print(f"#{tc} {dist[N-1][N-1]}")
