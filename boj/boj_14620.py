@@ -1,4 +1,4 @@
-def check(idx, money):
+def sol(idx, money):
     global ans
     if money > ans:
         return
@@ -13,20 +13,26 @@ def check(idx, money):
 
     else:
         y, x = brr[idx][1], brr[idx][2]
-        if [y, x] not in visited:
-            for jdx in visited:
-                if abs(jdx[0] - y) and abs(jdx[1]-x):
-                    visited.append([y, x])
-                    check(idx+1, money+brr[idx][0])
-                    visited.remove([y, x])
-                elif abs(jdx[0] - y) == 1 or abs(jdx[1] - x) == 1:
-                    check(idx+1, money)
-                elif not abs(jdx[0] - y) and not abs(jdx[1] - x):
-                    check(idx+1, money)
-                else:
-                    visited.append([y, x])
-                    check(idx+1, money+brr[idx][0])
-                    visited.remove([y, x])
+        check = set()
+        for jdx in visited:
+            for kdx in range(4):
+                check.add((jdx[0] + dy[kdx], jdx[1] + dx[kdx]))
+
+        if (y, x) not in check:
+            flag = False
+            for jdx in range(4):
+                if (y+dy[jdx], x+dx[jdx]) in check:
+                    flag = True
+                    break
+            if not flag:
+                visited.append([y, x])
+                sol(idx+1, money+brr[idx][0])
+                visited.remove([y, x])
+            else:
+                sol(idx+1, money)
+
+        else:
+            sol(idx+1, money)
 
 
 N = int(input())
@@ -45,11 +51,11 @@ for i in range(1, N-1):
         brr.append([sum_arr, i, j])
 
 brr.sort()
-print(brr)
+
 ans = 987654321
 for i in range(len(brr)):
     tmp = brr[i][0]
     visited = [[brr[i][1], brr[i][2]]]
-    check(i+1, tmp)
+    sol(i+1, tmp)
 
 print(ans)
