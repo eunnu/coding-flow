@@ -1,9 +1,6 @@
 def sol(idx, money):
     global ans
-    if money > ans:
-        return
-
-    if idx >= len(brr):
+    if idx == len(brr):
         return
 
     if len(visited) == 3:
@@ -52,8 +49,8 @@ for i in range(1, N-1):
 
 brr.sort()
 
-ans = 987654321
-for i in range(len(brr)):
+ans = 3000
+for i in range(len(brr)-1):
     tmp = brr[i][0]
     visited = [[brr[i][1], brr[i][2]]]
     sol(i+1, tmp)
