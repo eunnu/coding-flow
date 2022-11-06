@@ -21,53 +21,63 @@ def smell_check():
 
 
 def shark_move():           # 상어 이동
-    global fish, dd
+    global fish, shark
+
     many = []
-    maxi = 0
-    for idx in range(4):
-        ony = shark[0] + sdy[idx]
-        onx = shark[1] + sdx[idx]
-        o_cnt = 0
+    maxi = -1
+
+    for first_move in range(4):
+        first_y = shark[0] + sdy[first_move]
+        first_x = shark[1] + sdx[first_move]
+
         eat = set()
-        if 1 <= ony <= 4 and 1 <= onx <= 4:
-            if (ony, onx) in fish:
-                o_cnt += len(fish[(ony, onx)])
-                eat.add((ony, onx))
-            for jdx in range(4):
-                tny = ony + sdy[jdx]
-                tnx = onx + sdx[jdx]
-                t_cnt = o_cnt
-                if 1 <= tny <= 4 and 1 <= tnx <= 4:
-                    if (tny, tnx) in fish and (tny, tnx) not in eat:
-                        t_cnt += len(fish[(tny, tnx)])
-                        eat.add((tny, tnx))
-                    for kdx in range(4):
-                        ny = tny + sdy[kdx]
-                        nx = tnx + sdx[kdx]
-                        cnt = t_cnt
+        first_eat = 0
+        if 1 <= first_x <= 4 and 1 <= first_y <= 4:
+            if (first_y, first_x) in fish:
+                first_eat = len(fish[(first_y, first_x)])
+                eat.add((first_y, first_x))
+
+            for second_move in range(4):
+                second_y = first_y + sdy[second_move]
+                second_x = first_x + sdx[second_move]
+                second_eat = 0
+                if 1 <= second_x <= 4 and 1 <= second_y <= 4:
+                    if (second_y, second_x) not in eat:
+                        if (second_y, second_x) in fish:
+                            second_eat = first_eat + len(fish[(second_y, second_x)])
+                            eat.add((second_y, second_x))
+                        else:
+                            second_eat = first_eat
+
+                    for third_move in range(4):
+                        ny = second_y + sdy[third_move]
+                        nx = second_x + sdx[third_move]
+
                         if 1 <= ny <= 4 and 1 <= nx <= 4:
-                            if (ny, nx) in fish and (ny, nx) not in eat:
-                                cnt += len(fish[(ny, nx)])
+                            if (ny, nx) not in eat:
+                                if (ny, nx) in fish:
+                                    if maxi < second_eat + len(fish[(ny, nx)]):
+                                        maxi = second_eat + len(fish[(ny, nx)])
+                                        many = [(first_y, first_x), (second_y, second_x), (ny, nx)]
+                                else:
+                                    if maxi < second_eat:
+                                        maxi = second_eat
+                                        many = [(first_y, first_x), (second_y, second_x), (ny, nx)]
 
-                        if maxi < cnt:
-                            maxi = cnt
-                            many = [idx, jdx, kdx]
-                        if dd == 3 and idx == 3:
-                            print(idx, jdx, kdx, cnt)
-                if (tny, tnx) in eat:
-                    eat.discard((tny, tnx))
-            if (ony, onx) in eat:
-                eat.discard((ony, onx))
+                    if (second_y, second_x) in eat:
+                        second_eat -= len(fish[(second_y, second_x)])
+                        eat.discard((second_y, second_x))
 
-    for ms in many:
-        ny = shark[0] + sdy[ms]
-        nx = shark[1] + sdx[ms]
-        if (ny, nx) in fish:
-            fish.pop((ny, nx))
-            smell[(ny, nx)] = 0
+            if (first_y, first_x) in eat:
+                first_eat -= len(fish[(first_y, first_x)])
+                eat.discard((first_y, first_x))
 
-        shark[0] = ny
-        shark[1] = nx
+    for shark_eat in many:
+        if shark_eat in fish:
+            fish.pop(shark_eat)
+            smell[shark_eat] = 1
+
+    shark = many[-1]
 
 
 def fish_move():           # 물고기 이동
@@ -111,7 +121,7 @@ fdx = [0, -1, -1, 0, 1, 1, 1, 0, -1]
 sdy = [-1, 0, 1, 0]
 sdx = [0, -1, 0, 1]
 
-for dd in range(S):
+for _ in range(S):
     clone_fish = dict()
     fish_move()
     shark_move()
@@ -127,6 +137,4 @@ ans = 0
 for i in fish.keys():
     ans += len(fish[i])
 
-print(smell)
-print(shark)
 print(ans)
