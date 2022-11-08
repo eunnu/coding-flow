@@ -11,17 +11,17 @@ def smell_check():
     global smell
     no_smell = []
     for smell_index in smell.keys():
-        if smell[smell_index] > 2:
+        if smell[smell_index] == 0:
             no_smell.append(smell_index)
         else:
-            smell[smell_index] += 1
+            smell[smell_index] -= 1
 
     for no_s in no_smell:
         smell.pop(no_s)
 
 
 def shark_move():           # 상어 이동
-    global fish, shark
+    global fish, shark, dd
 
     many = []
     maxi = -1
@@ -40,70 +40,80 @@ def shark_move():           # 상어 이동
             for second_move in range(4):
                 second_y = first_y + sdy[second_move]
                 second_x = first_x + sdx[second_move]
-                second_eat = 0
+
                 if 1 <= second_x <= 4 and 1 <= second_y <= 4:
-                    if (second_y, second_x) not in eat:
-                        if (second_y, second_x) in fish:
+                    second_eat = first_eat
+                    if (second_y, second_x) in fish:
+                        if (second_y, second_x) not in eat:
                             second_eat = first_eat + len(fish[(second_y, second_x)])
                             eat.add((second_y, second_x))
-                        else:
-                            second_eat = first_eat
 
                     for third_move in range(4):
                         ny = second_y + sdy[third_move]
                         nx = second_x + sdx[third_move]
 
                         if 1 <= ny <= 4 and 1 <= nx <= 4:
-                            if (ny, nx) not in eat:
-                                if (ny, nx) in fish:
+                            if maxi < second_eat:
+                                maxi = second_eat
+                                many = [(first_y, first_x), (second_y, second_x), (ny, nx)]
+
+                            if (ny, nx) in fish:
+                                if (ny, nx) not in eat:
                                     if maxi < second_eat + len(fish[(ny, nx)]):
                                         maxi = second_eat + len(fish[(ny, nx)])
                                         many = [(first_y, first_x), (second_y, second_x), (ny, nx)]
-                                else:
-                                    if maxi < second_eat:
-                                        maxi = second_eat
-                                        many = [(first_y, first_x), (second_y, second_x), (ny, nx)]
 
                     if (second_y, second_x) in eat:
-                        second_eat -= len(fish[(second_y, second_x)])
                         eat.discard((second_y, second_x))
-
-            if (first_y, first_x) in eat:
-                first_eat -= len(fish[(first_y, first_x)])
-                eat.discard((first_y, first_x))
 
     for shark_eat in many:
         if shark_eat in fish:
             fish.pop(shark_eat)
-            smell[shark_eat] = 1
+            smell[shark_eat] = 2
 
     shark = many[-1]
 
+    smell_check()
+
 
 def fish_move():           # 물고기 이동
-    global fish, clone_fish
+    global fish
+    clone_fish = dict()
     move_fish = dict()
     for fi in fish.keys():
-        if fi not in clone_fish:
-            clone_fish[fi] = []
+        clone_fish[fi] = fish[fi]
         for jdx in range(len(fish[fi])):
-            clone_fish[fi].append(fish[fi][jdx])
             dire = fish[fi][jdx]
+            flag = False
             for _ in range(8):
                 fny = fi[0] + fdy[dire]
                 fnx = fi[1] + fdx[dire]
 
                 if 1 <= fny <= 4 and 1 <= fnx <= 4:
-                    if (fny, fnx) not in smell and shark != [fny, fnx]:
+                    if (fny, fnx) not in smell and shark != (fny, fnx):
                         if (fny, fnx) not in move_fish:
                             move_fish[(fny, fnx)] = []
                         move_fish[(fny, fnx)].append(dire)
+                        flag = True
                         break
                 dire -= 1
                 if dire < 1:
                     dire = 8
 
+            if not flag:
+                if (fi[0], fi[1]) not in move_fish:
+                    move_fish[(fi[0], fi[1])] = []
+                move_fish[(fi[0], fi[1])].append(fish[fi][jdx])
+
     fish = move_fish
+
+    shark_move()
+
+    for f in clone_fish.keys():
+        if f not in fish:
+            fish[f] = clone_fish[f]
+        else:
+            fish[f] += clone_fish[f]
 
 
 M, S = map(int, input().split())
@@ -115,23 +125,14 @@ for _ in range(M):
         fish[(i, j)] = []
     fish[(i, j)].append(d)
 
-shark = list(map(int, input().split()))
+shark = tuple(map(int, input().split()))
 fdy = [0, 0, -1, -1, -1, 0, 1, 1, 1]
 fdx = [0, -1, -1, 0, 1, 1, 1, 0, -1]
 sdy = [-1, 0, 1, 0]
 sdx = [0, -1, 0, 1]
 
-for _ in range(S):
-    clone_fish = dict()
+for dd in range(S):
     fish_move()
-    shark_move()
-    smell_check()
-    for f in clone_fish.keys():
-        if f not in fish:
-            fish[f] = clone_fish[f]
-        else:
-            for j in clone_fish[f]:
-                fish[f].append(j)
 
 ans = 0
 for i in fish.keys():
