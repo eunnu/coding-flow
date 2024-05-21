@@ -1,18 +1,29 @@
-# 1. 제일 낮은 층에 맞추는 것 : 256 초과시 아웃
-# 2. 제일 높은 층에 맞추는 것 : B 개수보다 낮은 층이 많으면 아웃
-# 3. 중간 층에 맞추는 것 : 가장 낮은 것과 높은 것의 중간을 구하고 그 층에 맞춤.
-#    해당 과정을 아웃 되지 않는 선에서 반복할 것
-
+# 시간 복잡도 : 500 * 500 * 256 = 대략 1억번 => 1초에 근사함
+# 브루트 포스 알고리즘
 
 import sys
 
 N, M, B = map(int, sys.stdin.readline().split(" "))
-mine = []
-min_n, max_n = 987654321, 0
-for _ in range(N):
-    temp = list(map(int, sys.stdin.readline().split(" ")))
-    min_n = min(min_n, temp)
-    max_n = max(max_n, temp)
-    mine.append(temp)
+res_t, res_h = 987654321, 0
+mine = [list(map(int, sys.stdin.readline().split(" "))) for _ in range(N)]
 
+for i in range(257):  # 최대 높이가 256
+    height, t_time = i, 0
+    block = B
+    for y in range(N):
+        for x in range(M):
+            if mine[y][x] > i:
+                t_time += (mine[y][x] - i) * 2
+                block += mine[y][x] - i
+            elif mine[y][x] < i:
+                t_time += (i - mine[y][x])
+                block -= (i - mine[y][x])
+    if block < 0:
+        break
 
+    if res_t >= t_time:
+        res_t = t_time
+        if res_h < height:
+            res_h = height
+
+print(res_t, res_h)
